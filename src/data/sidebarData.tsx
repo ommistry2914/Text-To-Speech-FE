@@ -10,3 +10,14 @@ export const routes = [
         allowedRoles: ["super_admin"],
     },
 ]
+
+export const temRoute = [ 
+    {
+        title:"Home",
+        url: "/",
+    },
+    {
+        title:"Setting",
+        url:"/Setting",
+    }
+]
