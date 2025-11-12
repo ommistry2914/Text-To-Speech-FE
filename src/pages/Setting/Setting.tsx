@@ -2,7 +2,7 @@
 const Setting = () => {
   return (
     <div>
-      Setting
+      Common Setting
     </div>
   )
 }

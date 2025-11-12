@@ -34,22 +34,22 @@ axiosInstance.interceptors.request.use(
     const accessToken = TokenStorage.getAccessToken();
     const user = TokenStorage.getUser();
 
-    // ✅ Ensure headers always exist and are mutable
+    // Ensure headers always exist and are mutable
     config.headers = config.headers || {};
 
     if (accessToken && !config.headers["Authorization"]) {
       (config.headers as any)["Authorization"] = `Bearer ${accessToken}`;
     }
 
-    // ✅ Safely add schoolId to request
-    if (user && typeof user["school.id"] === "number") {
-      const schoolId = user["school.id"];
+    //  Safely add userId to request
+    if (user && typeof user["id"] === "number") {
+      const userId = user["id"];
       const method = config.method?.toLowerCase();
 
       if (["post", "put", "patch"].includes(method || "")) {
-        config.data = { ...(config.data || {}), schoolId };
+        config.data = { ...(config.data || {}), userId };
       } else if (method === "get") {
-        config.params = { ...(config.params || {}), schoolId };
+        config.params = { ...(config.params || {}), userId };
       }
     }
 

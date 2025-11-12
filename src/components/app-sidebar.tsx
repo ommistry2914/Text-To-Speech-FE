@@ -10,25 +10,22 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 import { Link, useLocation } from "react-router-dom";
-import { routes, temRoute } from "@/data/sidebarData";
-// import logo from "../assets/images/akinoLogo.svg";
+import { routes } from "@/data/sidebarData";
 import logo from "../assets/images/JanshoAI-text-removebg-preview.png";
 import { Separator } from "./ui/separator";
 import { NavUser } from "./NavUser";
-// import { NavUser } from "./NavUser";
-// import { useSelector } from "react-redux";
-// import type { RootState } from "@/slice/store";
+import { useAppSelector } from "@/slice/hook";
 
 export function AppSidebar({ ...props }) {
-  // const user = useSelector((state: RootState) => state.auth.user);
+  const user = useAppSelector((state) => state.auth.user);
 
   const location = useLocation();
 
-  // if(!user) return null;
+  if(!user) return null;
 
-  // const filteredRoutes = routes.filter((route) =>
-  //   route.allowedRoles.includes(user.role)
-  // );
+  const filteredRoutes = routes.filter((route) =>
+    route.allowedRoles.includes(user.role)
+  );
   return (
     <Sidebar {...props} className="">
       <div className="h-full bg-white text-black flex flex-col">
@@ -48,7 +45,7 @@ export function AppSidebar({ ...props }) {
         <SidebarContent>
           <SidebarGroup>
             <SidebarMenu className="gap-2">
-              {temRoute.map((item) => (
+              {filteredRoutes.map((item) => (
                 <SidebarMenuItem key={item.url}>
                   <SidebarMenuButton
                     asChild

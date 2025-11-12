@@ -8,13 +8,12 @@ import { useAppSelector } from "@/slice/hook";
 function AppRoutes() {
   const user = useAppSelector((state) => state.auth.user);
   const [navigateRoute, setNavigateRoute] = useState("/login");
-  console.log("user",user);
   useEffect(() => {
     if (!user) return;
 
     switch (user.role) {
       case "superAdmin":
-        setNavigateRoute("/superDashboard");
+        setNavigateRoute("/superAdminDashboard");
         break;
       case "user":
         setNavigateRoute("/userDashboard");
