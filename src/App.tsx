@@ -4,9 +4,6 @@ import AppRoutes from './routes/AppRoute'
 function App() {
 
   return (
-    // <>
-    //   <Button>Hello</Button>
-    // </>
     <HashRouter>
       <AppRoutes/>
     </HashRouter>

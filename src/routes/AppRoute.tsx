@@ -1,22 +1,19 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import PublicRoutes from "./PublicRoute";
-import { useSelector } from "react-redux";
-import type { RootState } from "@/slice/store";
 import { useEffect, useState } from "react";
 import SuperAdminRoutes from "./SuperAdminRoute";
 import UserRoutes from "./UserRoute";
-import TemRoute from "./TemRoute";
+import { useAppSelector } from "@/slice/hook";
 
 function AppRoutes() {
-  const user = useSelector((state: RootState) => state.auth.user);
+  const user = useAppSelector((state) => state.auth.user);
   const [navigateRoute, setNavigateRoute] = useState("/login");
-
-
-useEffect(() => {
+  console.log("user",user);
+  useEffect(() => {
     if (!user) return;
 
     switch (user.role) {
-      case "super_admin":
+      case "superAdmin":
         setNavigateRoute("/superDashboard");
         break;
       case "user":
@@ -31,35 +28,29 @@ useEffect(() => {
     if (!user) return null;
 
     switch (user.role) {
-      case "super_admin":
+      case "superAdmin":
         return SuperAdminRoutes();
-      case "admin":
+      case "user":
         return UserRoutes();
       default:
         return null;
     }
   };
 
-  const isAuthenticated = false;
+  const isAuthenticated = Boolean(user);
   return (
     <Routes>
       {isAuthenticated ? (
         <>
-          {user ? (
-            <>
-              {renderRoleRoutes()}
-              <Route path="*" element={<Navigate to={navigateRoute} replace />} />
-            </>
-          ) : (
-            <>
-              {PublicRoutes()}
-              <Route path="*" element={<Navigate to="/login" replace />} />
-            </>
-          )}
+          {renderRoleRoutes()}
+          {/* Redirect any unknown route to correct dashboard */}
+          <Route path="*" element={<Navigate to={navigateRoute} replace />} />
         </>
       ) : (
         <>
-          {TemRoute()}
+          {PublicRoutes()}
+          {/* Redirect all unknown routes to login */}
+          <Route path="*" element={<Navigate to="/login" replace />} />
         </>
       )}
     </Routes>

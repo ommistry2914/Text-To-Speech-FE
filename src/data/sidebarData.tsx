@@ -2,12 +2,12 @@ export const routes = [
     {
         title:"Home",
         url: "/",
-        allowedRoles: ["super_admin", "admin"],
+        allowedRoles: ["superAdmin", "admin"],
     },
     {
         title:"Setting",
         url: "/setting",
-        allowedRoles: ["super_admin"],
+        allowedRoles: ["superAdmin"],
     },
 ]
 

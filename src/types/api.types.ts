@@ -1,4 +1,8 @@
-// Global API-related interfaces and Axios types
+export interface ApiResponse<T> {
+  success: boolean;
+  message: string;
+  data: T;
+}
 
 export interface RefreshResponse {
   accessToken: string;

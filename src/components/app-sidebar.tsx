@@ -14,6 +14,7 @@ import { routes, temRoute } from "@/data/sidebarData";
 // import logo from "../assets/images/akinoLogo.svg";
 import logo from "../assets/images/JanshoAI-text-removebg-preview.png";
 import { Separator } from "./ui/separator";
+import { NavUser } from "./NavUser";
 // import { NavUser } from "./NavUser";
 // import { useSelector } from "react-redux";
 // import type { RootState } from "@/slice/store";
@@ -71,7 +72,7 @@ export function AppSidebar({ ...props }) {
         </SidebarContent>
 
         <SidebarFooter>
-          {/* <NavUser /> */}
+          <NavUser />
         </SidebarFooter>
         <SidebarRail />
       </div>

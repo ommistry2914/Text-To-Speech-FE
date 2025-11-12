@@ -1,7 +1,12 @@
 // User Interface
 import type { User } from "@/types/user.types";
 
-// API Response Interfaces
+export interface RegisterCredentials {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+}
 export interface LoginCredentials {
   email: string;
   password: string;

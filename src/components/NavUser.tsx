@@ -23,17 +23,15 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-// import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-// import { logout } from "@/slice/auth.slice";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import type { RootState } from "@/slice/store";
+import { useAppDispatch, useAppSelector } from "@/slice/hook";
+import { logout } from "@/slice/auth.slice";
 
 export function NavUser() {
   const { isMobile } = useSidebar();
-//   const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
-  const user = useSelector((state: RootState) => state.auth.user);
+  const user = useAppSelector((state) => state.auth.user);
 
   const firstName = user?.firstName || "";
   const lastName = user?.lastName || "";
@@ -41,7 +39,7 @@ export function NavUser() {
   const initials = (firstName?.[0] || "") + (lastName?.[0] || "");
 
   const handleLogout = () => {
-    // dispatch(logout());
+    dispatch(logout());
   };
 
   return (
