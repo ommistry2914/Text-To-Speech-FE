@@ -12,32 +12,34 @@ import {
 import { Link, useLocation } from "react-router-dom";
 import { routes, temRoute } from "@/data/sidebarData";
 // import logo from "../assets/images/akinoLogo.svg";
-import logo from "../assets/images/JanshoAI-text-removebg-preview.png";
+// import logo from "../assets/images/JanshoAI-text-removebg-preview.png";
+import logo from "../assets/images/janshoai-logo-2-bg-dark-2.png";
 import { Separator } from "./ui/separator";
-import { NavUser } from "./NavUser";
+import { useAppSelector } from "@/slice/hook";
+// import { NavUser } from "./NavUser";
 // import { NavUser } from "./NavUser";
 // import { useSelector } from "react-redux";
 // import type { RootState } from "@/slice/store";
 
 export function AppSidebar({ ...props }) {
-  // const user = useSelector((state: RootState) => state.auth.user);
+   const user = useAppSelector((state) => state.auth.user);
 
   const location = useLocation();
 
-  // if(!user) return null;
+  if(!user) return null;
 
-  // const filteredRoutes = routes.filter((route) =>
-  //   route.allowedRoles.includes(user.role)
-  // );
+  const filteredRoutes = routes.filter((route) =>
+    route.allowedRoles.includes(user.role)
+  );
   return (
     <Sidebar {...props} className="">
-      <div className="h-full bg-white text-black flex flex-col">
+      <div className="h-full bg-primary text-secondary flex flex-col">
         <SidebarHeader>
           <SidebarMenu>
             <SidebarMenuItem>
               <SidebarMenuButton size="lg" asChild>
                 <Link to="/" className="flex justify-center">
-                  <img src={logo} alt="logo" className="size-38 " />
+                  <img src={logo} alt="logo" className=" " />
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -48,7 +50,7 @@ export function AppSidebar({ ...props }) {
         <SidebarContent>
           <SidebarGroup>
             <SidebarMenu className="gap-2">
-              {temRoute.map((item) => (
+              {filteredRoutes.map((item) => (
                 <SidebarMenuItem key={item.url}>
                   <SidebarMenuButton
                     asChild
