@@ -1,8 +1,11 @@
 // src/types/user.types.ts
 export interface User {
-  id: number; // mandatory
-  name: string;
+  id: string | number;
+  firstName?: string;
+  lastName?: string;
+  name?: string;
   email: string;
-  "school.id"?: number;
+  role: "user" | "superAdmin" | string;
+  schoolId?: number;
   [key: string]: any;
 }

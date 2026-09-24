@@ -1,10 +1,7 @@
 import {
-  BadgeCheck,
-  Bell,
-  ChevronsUpDown,
-  CreditCard,
   LogOut,
-  Sparkles,
+  Settings,
+  User,
 } from "lucide-react";
 
 import {
@@ -17,23 +14,16 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import {
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  useSidebar,
-} from "@/components/ui/sidebar";
-// import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-// import { logout } from "@/slice/auth.slice";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import type { RootState } from "@/slice/store";
+import { Avatar, AvatarFallback } from "./ui/avatar";
+import { useAppDispatch, useAppSelector } from "@/slice/hook";
+import { logout } from "@/slice/auth.slice";
+import { cn } from "@/lib/utils";
+import { useNavigate } from "react-router-dom";
 
 export function NavUser() {
-  const { isMobile } = useSidebar();
-//   const dispatch = useDispatch();
-
-  const user = useSelector((state: RootState) => state.auth.user);
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const user = useAppSelector((state) => state.auth.user);
 
   const firstName = user?.firstName || "";
   const lastName = user?.lastName || "";
@@ -41,57 +31,90 @@ export function NavUser() {
   const initials = (firstName?.[0] || "") + (lastName?.[0] || "");
 
   const handleLogout = () => {
-    // dispatch(logout());
+    dispatch(logout());
   };
 
   return (
-    <SidebarMenu>
-      <SidebarMenuItem>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <SidebarMenuButton
-              size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-            >
-              <Avatar className="h-8 w-8 rounded-lg">
-                {/* <AvatarImage src={user.avatar} alt={user.name} /> */}
-                <AvatarFallback className="rounded-lg">
-                  {initials}
-                </AvatarFallback>
-              </Avatar>
-              <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{fullName}</span>
-                <span className="truncate text-xs">{user?.email}</span>
-              </div>
-              <ChevronsUpDown className="ml-auto size-4" />
-            </SidebarMenuButton>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent
-            className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
-            side={isMobile ? "bottom" : "right"}
-            align="end"
-            sideOffset={4}
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button
+          className={cn(
+            "flex items-center gap-3 w-full px-3 py-2.5 rounded-xl",
+            "hover:bg-accent transition-all duration-200 text-left group"
+          )}
+        >
+          <Avatar className="h-9 w-9 rounded-xl border border-border flex-shrink-0">
+            <AvatarFallback className="rounded-xl bg-gradient-to-br from-purple-600 to-violet-600 text-white text-sm font-semibold">
+              {initials || "U"}
+            </AvatarFallback>
+          </Avatar>
+          <div className="flex-1 min-w-0 hidden md:block">
+            <p className="text-sm font-semibold text-foreground truncate leading-tight">
+              {fullName || "User"}
+            </p>
+            <p className="text-xs text-muted-foreground truncate">
+              {user?.email || ""}
+            </p>
+          </div>
+          <Settings className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0 hidden md:block" />
+        </button>
+      </DropdownMenuTrigger>
+
+      <DropdownMenuContent
+        className="w-60 rounded-xl shadow-lg border-border"
+        side="top"
+        align="start"
+        sideOffset={8}
+      >
+        <DropdownMenuLabel className="p-3 font-normal">
+          <div className="flex items-center gap-3">
+            <Avatar className="h-10 w-10 rounded-xl border border-border">
+              <AvatarFallback className="rounded-xl bg-gradient-to-br from-purple-600 to-violet-600 text-white text-sm font-semibold">
+                {initials || "U"}
+              </AvatarFallback>
+            </Avatar>
+            <div className="min-w-0">
+              <p className="text-sm font-semibold text-foreground truncate">
+                {fullName || "User"}
+              </p>
+              <p className="text-xs text-muted-foreground truncate">
+                {user?.email || ""}
+              </p>
+            </div>
+          </div>
+        </DropdownMenuLabel>
+
+        <DropdownMenuSeparator />
+
+        {/* Profile Settings and Preferences temporarily disabled per requirement
+        <DropdownMenuGroup>
+          <DropdownMenuItem
+            className="gap-2 cursor-pointer"
+            onClick={() => navigate("/userSetting")}
           >
-            <DropdownMenuLabel className="p-0 font-normal">
-              <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={user?.avatar} alt={user?.name} />
-                  <AvatarFallback className="rounded-lg"></AvatarFallback>
-                </Avatar>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">{fullName}</span>
-                  <span className="truncate text-xs">{user?.email}</span>
-                </div>
-              </div>
-            </DropdownMenuLabel>
-            {/* <DropdownMenuSeparator />          */}
-            <DropdownMenuItem onClick={handleLogout}>
-              <LogOut />
-              Log out
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </SidebarMenuItem>
-    </SidebarMenu>
+            <User className="w-4 h-4 text-muted-foreground" />
+            Profile Settings
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            className="gap-2 cursor-pointer"
+            onClick={() => navigate("/setting")}
+          >
+            <Settings className="w-4 h-4 text-muted-foreground" />
+            Preferences
+          </DropdownMenuItem>
+        </DropdownMenuGroup>
+
+        <DropdownMenuSeparator />
+        */}
+
+        <DropdownMenuItem
+          className="gap-2 cursor-pointer text-red-500 focus:text-red-500 focus:bg-red-500/10"
+          onClick={handleLogout}
+        >
+          <LogOut className="w-4 h-4" />
+          Log out
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }

@@ -1,8 +1,14 @@
-// Global API-related interfaces and Axios types
+import type { User } from "@/types/user.types";
+
+export interface ApiResponse<T> {
+  success: boolean;
+  message: string;
+  data: T;
+}
 
 export interface RefreshResponse {
   accessToken: string;
-  refreshToken: string;
+  user: User;
 }
 
 export interface ApiError {
