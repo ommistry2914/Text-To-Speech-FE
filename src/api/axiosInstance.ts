@@ -5,7 +5,15 @@ import { TokenStorage } from "./tokenStorage";
 import type { ApiError, ApiResponse } from "@/types/api.types";
 import type { User } from "@/types/user.types";
 
-const BASE_URL = (import.meta.env.VITE_API_URL as string) || "http://localhost:5000/v1";
+const isProduction =
+  import.meta.env.PROD ||
+  (typeof window !== "undefined" &&
+    window.location.hostname !== "localhost" &&
+    window.location.hostname !== "127.0.0.1");
+
+const BASE_URL =
+  (import.meta.env.VITE_API_URL as string) ||
+  (isProduction ? "https://jansho-ai-be.vercel.app/v1" : "http://localhost:5000/v1");
 
 const axiosInstance: AxiosInstance = axios.create({
   baseURL: BASE_URL,
