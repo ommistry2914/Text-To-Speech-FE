@@ -1,14 +1,7 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardContent,
-  CardFooter,
-} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -21,6 +14,8 @@ import {
 } from "@/components/ui/form";
 import { login, resetError, selectAuth } from "@/slice/auth.slice";
 import { useAppDispatch, useAppSelector } from "@/slice/hook";
+import { Link } from "react-router-dom";
+import { Eye, EyeOff, Loader2, Sparkles } from "lucide-react";
 
 const loginSchema = z.object({
   email: z.string().email("Enter a valid email"),
@@ -32,6 +27,7 @@ type LoginFormData = z.infer<typeof loginSchema>;
 export default function LoginForm() {
   const dispatch = useAppDispatch();
   const { loading, error, isAuthenticated } = useAppSelector(selectAuth);
+  const [showPassword, setShowPassword] = useState(false);
 
   const form = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
@@ -42,7 +38,6 @@ export default function LoginForm() {
     dispatch(login(data));
   };
 
-  // Reset error when component mounts or unmounts
   useEffect(() => {
     return () => {
       dispatch(resetError());
@@ -51,78 +46,121 @@ export default function LoginForm() {
 
   useEffect(() => {
     if (isAuthenticated) {
-      console.log("✅ Login success — redirect or handle navigation here");
-      // Example:
-      // navigate("/dashboard");
+      // navigation handled by AppRoute
     }
   }, [isAuthenticated]);
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-50 dark:bg-gray-900">
-      <Card className="w-full max-w-sm shadow-md">
-        <CardHeader>
-          <CardTitle className="text-center text-2xl font-semibold">
-            Login
-          </CardTitle>
-        </CardHeader>
+    <div className="w-full">
+      {/* Header */}
+      <div className="mb-8">
+        <h2 className="text-3xl font-bold text-white mb-2">Welcome back</h2>
+        <p className="text-zinc-400 text-sm">
+          Sign in to your JanshoAI account to continue
+        </p>
+      </div>
 
-        <CardContent>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="email"
-                        placeholder="Enter your email"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-zinc-300 text-sm font-medium">
+                  Email address
+                </FormLabel>
+                <FormControl>
+                  <Input
+                    type="email"
+                    placeholder="you@example.com"
+                    className="bg-white/5 border-white/10 text-white placeholder:text-zinc-600 h-12 focus:border-purple-500 focus:ring-purple-500/20 transition-colors rounded-xl"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage className="text-red-400 text-xs" />
+              </FormItem>
+            )}
+          />
 
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Password</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="password"
-                        placeholder="Enter your password"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <div className="flex items-center justify-between mb-2">
+                  <FormLabel className="text-zinc-300 text-sm font-medium">
+                    Password
+                  </FormLabel>
+                  <Link
+                    to="#"
+                    className="text-xs text-purple-400 hover:text-purple-300 transition-colors"
+                  >
+                    Forgot password?
+                  </Link>
+                </div>
+                <FormControl>
+                  <div className="relative">
+                    <Input
+                      type={showPassword ? "text" : "password"}
+                      placeholder="Enter your password"
+                      className="bg-white/5 border-white/10 text-white placeholder:text-zinc-600 h-12 focus:border-purple-500 focus:ring-purple-500/20 transition-colors rounded-xl pr-12"
+                      {...field}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-300 transition-colors"
+                    >
+                      {showPassword ? (
+                        <EyeOff className="w-4 h-4" />
+                      ) : (
+                        <Eye className="w-4 h-4" />
+                      )}
+                    </button>
+                  </div>
+                </FormControl>
+                <FormMessage className="text-red-400 text-xs" />
+              </FormItem>
+            )}
+          />
 
-              {error && (
-                <p className="text-red-500 text-sm text-center">{error}</p>
-              )}
+          {error && (
+            <div className="rounded-xl bg-red-500/10 border border-red-500/20 px-4 py-3">
+              <p className="text-red-400 text-sm text-center">{error}</p>
+            </div>
+          )}
 
-              <Button type="submit" className="w-full" disabled={loading}>
-                {loading ? "Logging in..." : "Login"}
-              </Button>
-            </form>
-          </Form>
-        </CardContent>
+          <Button
+            type="submit"
+            className="w-full h-12 bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-500 hover:to-violet-500 text-white font-semibold rounded-xl shadow-lg shadow-purple-500/20 hover:shadow-purple-500/40 transition-all duration-300 hover:scale-[1.01] active:scale-[0.99] text-base"
+            disabled={loading}
+          >
+            {loading ? (
+              <>
+                <Loader2 className="mr-2 w-4 h-4 animate-spin" />
+                Signing in...
+              </>
+            ) : (
+              <>
+                <Sparkles className="mr-2 w-4 h-4" />
+                Sign In
+              </>
+            )}
+          </Button>
+        </form>
+      </Form>
 
-        <CardFooter className="text-center text-sm text-gray-500">
-          Don’t have an account?{" "}
-          <a href="#/register" className="text-blue-500">
-            Sign up
-          </a>
-        </CardFooter>
-      </Card>
+      {/* Sign up link */}
+      <p className="mt-7 text-center text-sm text-zinc-500">
+        Don't have an account?{" "}
+        <Link
+          to="/register"
+          className="text-purple-400 hover:text-purple-300 font-medium transition-colors"
+        >
+          Create one free →
+        </Link>
+      </p>
     </div>
   );
 }
