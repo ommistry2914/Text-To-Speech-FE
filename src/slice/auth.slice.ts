@@ -1,30 +1,34 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import type { PayloadAction } from "@reduxjs/toolkit"
+import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "./store";
 import axiosInstance from "@/api/axiosInstance";
 import { TokenStorage } from "@/api/tokenStorage";
-import type { AuthState, LoginCredentials, LoginResponse, RegisterCredentials } from "@/types/auth.types";
+import type {
+  AuthState,
+  LoginCredentials,
+  RegisterCredentials,
+  AuthSuccessPayload,
+} from "@/types/auth.types";
 import type { ApiResponse } from "@/types/api.types";
+import type { User } from "@/types/user.types";
 
+/**
+ * Register a new account.
+ * Server issues HttpOnly refresh cookie and returns user + accessToken.
+ */
 export const register = createAsyncThunk<
-  LoginResponse,
+  AuthSuccessPayload,
   RegisterCredentials,
   { rejectValue: string }
 >("auth/register", async (data, { rejectWithValue }) => {
   try {
-    console.log("data", data);
-    const response = await axiosInstance.post<ApiResponse<LoginResponse>>(
+    const response = await axiosInstance.post<ApiResponse<AuthSuccessPayload>>(
       "/auth/register",
       data
     );
-    console.log("response", response);
-    const { accessToken, refreshToken, user } = response.data.data;
-
+    const { accessToken, user } = response.data.data;
     TokenStorage.setAccessToken(accessToken);
-    TokenStorage.setRefreshToken(refreshToken);
-    TokenStorage.setUser(user);
-
-    return { accessToken, refreshToken, user };
+    return { accessToken, user };
   } catch (error: any) {
     return rejectWithValue(
       error.response?.data?.message || "Registration failed. Please try again."
@@ -32,24 +36,24 @@ export const register = createAsyncThunk<
   }
 });
 
+/**
+ * Login with email and password.
+ * Transmits credentials directly over HTTPS/API without saving password locally.
+ * Server issues HttpOnly refresh cookie and returns user + accessToken.
+ */
 export const login = createAsyncThunk<
-  LoginResponse,
+  AuthSuccessPayload,
   LoginCredentials,
   { rejectValue: string }
 >("auth/login", async (credentials, { rejectWithValue }) => {
   try {
-    const response = await axiosInstance.post<ApiResponse<LoginResponse>>(
+    const response = await axiosInstance.post<ApiResponse<AuthSuccessPayload>>(
       "/auth/login",
       credentials
     );
-
-    const { accessToken, refreshToken, user } = response.data.data;
-
+    const { accessToken, user } = response.data.data;
     TokenStorage.setAccessToken(accessToken);
-    TokenStorage.setRefreshToken(refreshToken);
-    TokenStorage.setUser(user);
-
-    return { accessToken, refreshToken, user };
+    return { accessToken, user };
   } catch (error: any) {
     return rejectWithValue(
       error.response?.data?.message || "Login failed. Please try again."
@@ -57,50 +61,52 @@ export const login = createAsyncThunk<
   }
 });
 
-export const refreshTokens = createAsyncThunk<
-  LoginResponse,
+/**
+ * Silent session check on initial application load / refresh.
+ * Calls /auth/refresh with HttpOnly cookie credentials to restore state seamlessly.
+ */
+export const checkAuth = createAsyncThunk<
+  AuthSuccessPayload,
   void,
   { rejectValue: string }
->("auth/refreshTokens", async (_, { rejectWithValue }) => {
+>("auth/checkAuth", async (_, { rejectWithValue }) => {
   try {
-    const refreshToken = TokenStorage.getRefreshToken();
-    if (!refreshToken) throw new Error("No refresh token available");
-
-    const response = await axiosInstance.post<LoginResponse>(
-      "/auth/refresh-token",
-      { refreshToken }
+    const response = await axiosInstance.post<ApiResponse<{ accessToken: string; user: User }>>(
+      "/auth/refresh"
     );
-
-    const { accessToken, refreshToken: newRefreshToken, user } = response.data;
-
+    const { accessToken, user } = response.data.data;
     TokenStorage.setAccessToken(accessToken);
-    TokenStorage.setRefreshToken(newRefreshToken);
-    TokenStorage.setUser(user);
-
-    return { accessToken, refreshToken: newRefreshToken, user };
+    return { accessToken, user };
   } catch (error: any) {
     TokenStorage.clearTokens();
     return rejectWithValue(
-      error.response?.data?.message || "Session expired. Please log in again."
+      error.response?.data?.message || "Session not found or expired"
     );
   }
 });
 
+/**
+ * Logout: clears server-side refresh token and cookie, and clears in-memory state.
+ */
 export const logout = createAsyncThunk("auth/logout", async () => {
-  TokenStorage.clearTokens();
+  try {
+    await axiosInstance.post("/auth/logout");
+  } catch {
+    // Ignore network error on logout to always log out locally
+  } finally {
+    TokenStorage.clearTokens();
+  }
   return true;
 });
 
-
 const initialState: AuthState = {
-  user: TokenStorage.getUser() || null,
-  accessToken: TokenStorage.getAccessToken() || null,
-  refreshToken: TokenStorage.getRefreshToken() || null,
-  isAuthenticated: !!TokenStorage.getAccessToken(),
+  user: null,
+  accessToken: null,
+  isAuthenticated: false,
+  isInitialized: false, // true once initial checkAuth completes
   loading: false,
   error: null,
 };
-
 
 const authSlice = createSlice({
   name: "auth",
@@ -112,61 +118,60 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-    
+      // Register
       .addCase(register.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-
-      .addCase(register.fulfilled, (state, action: PayloadAction<LoginResponse>) => {
+      .addCase(register.fulfilled, (state, action: PayloadAction<AuthSuccessPayload>) => {
         state.loading = false;
         state.user = action.payload.user;
         state.accessToken = action.payload.accessToken;
-        state.refreshToken = action.payload.refreshToken;
         state.isAuthenticated = true;
+        state.isInitialized = true;
       })
       .addCase(register.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || "Registration failed";
       })
 
+      // Login
       .addCase(login.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(login.fulfilled, (state, action: PayloadAction<LoginResponse>) => {
+      .addCase(login.fulfilled, (state, action: PayloadAction<AuthSuccessPayload>) => {
         state.loading = false;
         state.user = action.payload.user;
         state.accessToken = action.payload.accessToken;
-        state.refreshToken = action.payload.refreshToken;
         state.isAuthenticated = true;
+        state.isInitialized = true;
       })
       .addCase(login.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || "Login failed";
       })
 
-      .addCase(
-        refreshTokens.fulfilled,
-        (state, action: PayloadAction<LoginResponse>) => {
-          state.user = action.payload.user;
-          state.accessToken = action.payload.accessToken;
-          state.refreshToken = action.payload.refreshToken;
-          state.isAuthenticated = true;
-        }
-      )
-      .addCase(refreshTokens.rejected, (state) => {
+      // Check Auth (silent refresh on load)
+      .addCase(checkAuth.fulfilled, (state, action: PayloadAction<AuthSuccessPayload>) => {
+        state.user = action.payload.user;
+        state.accessToken = action.payload.accessToken;
+        state.isAuthenticated = true;
+        state.isInitialized = true;
+      })
+      .addCase(checkAuth.rejected, (state) => {
         state.user = null;
         state.accessToken = null;
-        state.refreshToken = null;
         state.isAuthenticated = false;
+        state.isInitialized = true;
       })
 
+      // Logout
       .addCase(logout.fulfilled, (state) => {
         state.user = null;
         state.accessToken = null;
-        state.refreshToken = null;
         state.isAuthenticated = false;
+        state.isInitialized = true;
       });
   },
 });

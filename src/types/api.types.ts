@@ -1,3 +1,5 @@
+import type { User } from "@/types/user.types";
+
 export interface ApiResponse<T> {
   success: boolean;
   message: string;
@@ -6,7 +8,7 @@ export interface ApiResponse<T> {
 
 export interface RefreshResponse {
   accessToken: string;
-  refreshToken: string;
+  user: User;
 }
 
 export interface ApiError {

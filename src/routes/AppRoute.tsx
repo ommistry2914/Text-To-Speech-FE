@@ -3,12 +3,20 @@ import PublicRoutes from "./PublicRoute";
 import { useEffect, useState } from "react";
 import SuperAdminRoutes from "./SuperAdminRoute";
 import UserRoutes from "./UserRoute";
-import { useAppSelector } from "@/slice/hook";
+import { useAppDispatch, useAppSelector } from "@/slice/hook";
+import { checkAuth } from "@/slice/auth.slice";
 import OpenRoutes from "./OpenRoute";
 
 function AppRoutes() {
-  const user = useAppSelector((state) => state.auth.user);
+  const dispatch = useAppDispatch();
+  const { user, isInitialized } = useAppSelector((state) => state.auth);
   const [navigateRoute, setNavigateRoute] = useState("/login");
+
+  // On initial page load or hard refresh, silently check session via HttpOnly cookie
+  useEffect(() => {
+    dispatch(checkAuth());
+  }, [dispatch]);
+
   useEffect(() => {
     if (!user) return;
 
@@ -23,6 +31,15 @@ function AppRoutes() {
         setNavigateRoute("/login");
     }
   }, [user]);
+
+  // Loading state while verifying cookie session to prevent flash of wrong screen
+  if (!isInitialized) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen bg-[#050508]">
+        <div className="w-10 h-10 rounded-full border-2 border-purple-500/20 border-t-purple-500 animate-spin" />
+      </div>
+    );
+  }
 
   const renderRoleRoutes = () => {
     if (!user) return null;

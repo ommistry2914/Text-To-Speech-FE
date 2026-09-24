@@ -1,4 +1,4 @@
-// User Interface
+// User and Auth Interfaces
 import type { User } from "@/types/user.types";
 
 export interface RegisterCredentials {
@@ -7,23 +7,23 @@ export interface RegisterCredentials {
   email: string;
   password: string;
 }
+
 export interface LoginCredentials {
   email: string;
   password: string;
 }
 
-export interface LoginResponse {
+export interface AuthSuccessPayload {
   accessToken: string;
-  refreshToken: string;
   user: User;
 }
 
-// Redux State
+// Redux State - purely in memory, no sensitive tokens in localStorage
 export interface AuthState {
   user: User | null;
   accessToken: string | null;
-  refreshToken: string | null;
   isAuthenticated: boolean;
+  isInitialized: boolean;
   loading: boolean;
   error: string | null;
 }

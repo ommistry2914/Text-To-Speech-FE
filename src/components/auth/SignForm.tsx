@@ -19,10 +19,16 @@ import { Eye, EyeOff, Loader2, Sparkles } from "lucide-react";
 
 const signupSchema = z
   .object({
-    firstName: z.string().min(2, "First name must be at least 2 characters"),
-    lastName: z.string().min(2, "Last name must be at least 2 characters"),
-    email: z.string().email("Enter a valid email"),
-    password: z.string().min(6, "Password must be at least 6 characters"),
+    firstName: z.string().trim().min(2, "First name must be at least 2 characters"),
+    lastName: z.string().trim().min(2, "Last name must be at least 2 characters"),
+    email: z.string().trim().email("Enter a valid email"),
+    password: z
+      .string()
+      .min(8, "Password must be at least 8 characters")
+      .regex(/[A-Z]/, "Must contain at least one uppercase letter")
+      .regex(/[a-z]/, "Must contain at least one lowercase letter")
+      .regex(/[0-9]/, "Must contain at least one number")
+      .regex(/[^A-Za-z0-9]/, "Must contain at least one special character"),
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
@@ -158,7 +164,7 @@ export default function SignUpForm() {
                   <div className="relative">
                     <Input
                       type={showPassword ? "text" : "password"}
-                      placeholder="Min. 6 characters"
+                      placeholder="Min. 8 chars (Aa, 1, #)"
                       className="bg-white/5 border-white/10 text-white placeholder:text-zinc-600 h-12 focus:border-purple-500 focus:ring-purple-500/20 transition-colors rounded-xl pr-12"
                       {...field}
                     />
