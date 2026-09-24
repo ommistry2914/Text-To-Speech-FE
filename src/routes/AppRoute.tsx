@@ -4,11 +4,11 @@ import { useEffect, useState } from "react";
 import SuperAdminRoutes from "./SuperAdminRoute";
 import UserRoutes from "./UserRoute";
 import { useAppSelector } from "@/slice/hook";
+import OpenRoutes from "./OpenRoute";
 
 function AppRoutes() {
   const user = useAppSelector((state) => state.auth.user);
   const [navigateRoute, setNavigateRoute] = useState("/login");
-  console.log("user",user);
   useEffect(() => {
     if (!user) return;
 
@@ -48,9 +48,10 @@ function AppRoutes() {
         </>
       ) : (
         <>
+          {OpenRoutes()}
           {PublicRoutes()}
-          {/* Redirect all unknown routes to login */}
-          <Route path="*" element={<Navigate to="/login" replace />} />
+          {/* Redirect all unknown routes to landing page */}
+          <Route path="*" element={<Navigate to="/" replace />} />
         </>
       )}
     </Routes>
