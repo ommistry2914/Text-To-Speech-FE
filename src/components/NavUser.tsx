@@ -86,6 +86,7 @@ export function NavUser() {
 
         <DropdownMenuSeparator />
 
+        {/* Profile Settings and Preferences temporarily disabled per requirement
         <DropdownMenuGroup>
           <DropdownMenuItem
             className="gap-2 cursor-pointer"
@@ -104,6 +105,7 @@ export function NavUser() {
         </DropdownMenuGroup>
 
         <DropdownMenuSeparator />
+        */}
 
         <DropdownMenuItem
           className="gap-2 cursor-pointer text-red-500 focus:text-red-500 focus:bg-red-500/10"

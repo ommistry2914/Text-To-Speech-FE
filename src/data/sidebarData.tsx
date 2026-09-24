@@ -14,6 +14,7 @@ export const routes = [
     url: "/contactUs",
     allowedRoles: ["superAdmin", "user"],
   },
+  /* Temporarily commented out - to be used in future
   {
     title: "Setting",
     url: "/setting",
@@ -29,6 +30,7 @@ export const routes = [
     url: "/userSetting",
     allowedRoles: ["user"],
   },
+  */
 ];
 
 export const temRoute = [
@@ -36,10 +38,12 @@ export const temRoute = [
     title: "Home",
     url: "/userDashboard",
   },
+  /* Temporarily commented out - to be used in future
   {
     title: "Setting",
     url: "/setting",
   },
+  */
   {
     title: "Contact Us",
     url: "/contactUs",
