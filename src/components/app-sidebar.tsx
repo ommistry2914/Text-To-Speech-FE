@@ -12,7 +12,8 @@ import {
 } from "@/components/ui/sidebar";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { routes } from "@/data/sidebarData";
-import fullLogo from "../assets/images/janshoai-logo-2-bg-dark.png";
+import darkLogo from "../assets/images/janshoai-logo-2-bg-dark.png";
+import lightLogo from "../assets/images/janshoai-logo-light.png";
 import { Separator } from "./ui/separator";
 import { useAppSelector } from "@/slice/hook";
 import { cn } from "@/lib/utils";
@@ -74,10 +75,17 @@ export function AppSidebar({ ...props }) {
               <SidebarMenuItem>
                 <SidebarMenuButton size="lg" asChild className="hover:bg-sidebar-accent h-12">
                   <Link to={dashboardUrl} className="flex items-center">
+                    {/* Light Mode Logo (crisp royal-indigo/cyan on white) */}
                     <img
-                      src={fullLogo}
+                      src={lightLogo}
                       alt="JanshoAI"
-                      className="h-9 md:h-10 w-auto object-contain transition-transform duration-300 hover:scale-105"
+                      className="h-9 md:h-10 w-auto object-contain block dark:hidden transition-transform duration-300 hover:scale-105"
+                    />
+                    {/* Dark Mode Logo (glowing neon cyber-glow on dark) */}
+                    <img
+                      src={darkLogo}
+                      alt="JanshoAI"
+                      className="h-9 md:h-10 w-auto object-contain hidden dark:block transition-transform duration-300 hover:scale-105"
                     />
                   </Link>
                 </SidebarMenuButton>

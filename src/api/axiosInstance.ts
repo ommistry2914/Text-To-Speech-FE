@@ -99,11 +99,15 @@ axiosInstance.interceptors.response.use(
       }
     }
 
-    if (error.response) {
-      const message = error.response.data?.message || "Something went wrong!";
-      toast.error(message);
-    } else if (error.request) {
-      toast.error("Network error. Please verify the server is running.");
+    // Suppress error toast for silent background refresh checks
+    const isSilentRefresh = originalRequest?.url?.includes("/auth/refresh");
+    if (!isSilentRefresh) {
+      if (error.response) {
+        const message = error.response.data?.message || "Something went wrong!";
+        toast.error(message);
+      } else if (error.request) {
+        toast.error("Network error. Please verify the server is running.");
+      }
     }
 
     return Promise.reject(error);
