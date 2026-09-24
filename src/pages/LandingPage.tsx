@@ -20,7 +20,7 @@ import {
   Twitter,
   Linkedin,
 } from "lucide-react";
-import LogoImage from "@/assets/images/janshoai-logo-2.png";
+import LogoImage from "@/assets/images/janshoai-logo-2-bg-dark.png";
 import Navbar from "@/components/landingPage/Navbar";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
@@ -225,7 +225,7 @@ const LandingPage = () => {
                   </div>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <img src={LogoImage} alt="JanshoAI" className="h-4 w-auto object-contain" />
+                  <img src={LogoImage} alt="JanshoAI" className="h-5 md:h-6 w-auto object-contain" />
                 </div>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-6 md:p-8">
@@ -488,7 +488,7 @@ const LandingPage = () => {
                 <img
                   src={LogoImage}
                   alt="JanshoAI"
-                  className="h-8 md:h-9 w-auto object-contain filter contrast-125 brightness-95 dark:contrast-100 dark:brightness-100"
+                  className="h-10 md:h-11 w-auto object-contain"
                 />
               </div>
               <p className="text-zinc-500 text-sm leading-relaxed max-w-xs mb-6">

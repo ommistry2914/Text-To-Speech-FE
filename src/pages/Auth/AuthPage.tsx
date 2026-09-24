@@ -1,6 +1,6 @@
 import { Outlet, Link } from "react-router-dom";
 import { FileText, Mic, Bot } from "lucide-react";
-import LogoImage from "@/assets/images/janshoai-logo-2.png";
+import LogoImage from "@/assets/images/janshoai-logo-2-bg-dark.png";
 
 const toolCards = [
   {
@@ -47,11 +47,11 @@ function AuthPage() {
 
         <div className="relative z-10 flex flex-col h-full px-14 py-12 justify-between">
           {/* Logo — Single clean image */}
-          <Link to="/" className="flex items-center w-fit">
+          <Link to="/" className="flex items-center w-fit group">
             <img
               src={LogoImage}
               alt="JanshoAI"
-              className="h-9 w-auto object-contain filter contrast-125 brightness-95 dark:contrast-100 dark:brightness-100"
+              className="h-11 md:h-12 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
             />
           </Link>
 
@@ -118,7 +118,7 @@ function AuthPage() {
               <img
                 src={LogoImage}
                 alt="JanshoAI"
-                className="h-8 w-auto object-contain filter contrast-125 brightness-95 dark:contrast-100 dark:brightness-100"
+                className="h-10 md:h-11 w-auto object-contain"
               />
             </Link>
           </div>

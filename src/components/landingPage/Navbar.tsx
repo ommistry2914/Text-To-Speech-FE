@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Menu, X } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import LogoImage from "../../assets/images/janshoai-logo-2.png";
+import LogoImage from "../../assets/images/janshoai-logo-2-bg-dark.png";
 import { cn } from "@/lib/utils";
 
 const navLinks = [
@@ -47,7 +47,7 @@ const Navbar = () => {
           <img
             src={LogoImage}
             alt="JanshoAI"
-            className="h-8 md:h-9 w-auto object-contain filter contrast-125 brightness-95 dark:contrast-100 dark:brightness-100"
+            className="h-10 md:h-11 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
           />
         </Link>
 
@@ -96,7 +96,7 @@ const Navbar = () => {
                   <img
                     src={LogoImage}
                     alt="JanshoAI"
-                    className="h-8 w-auto object-contain filter contrast-125 brightness-95 dark:contrast-100 dark:brightness-100"
+                    className="h-10 w-auto object-contain"
                   />
                 </Link>
                 <div className="flex flex-col gap-1">

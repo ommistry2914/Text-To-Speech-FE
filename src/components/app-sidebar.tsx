@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/sidebar";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { routes } from "@/data/sidebarData";
-import fullLogo from "../assets/images/janshoai-logo-2.png";
+import fullLogo from "../assets/images/janshoai-logo-2-bg-dark.png";
 import { Separator } from "./ui/separator";
 import { useAppSelector } from "@/slice/hook";
 import { cn } from "@/lib/utils";
@@ -72,12 +72,12 @@ export function AppSidebar({ ...props }) {
           <SidebarHeader className="px-4 py-4">
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton size="lg" asChild className="hover:bg-sidebar-accent">
+                <SidebarMenuButton size="lg" asChild className="hover:bg-sidebar-accent h-12">
                   <Link to={dashboardUrl} className="flex items-center">
                     <img
                       src={fullLogo}
                       alt="JanshoAI"
-                      className="h-8 w-auto object-contain filter contrast-125 brightness-95 dark:contrast-100 dark:brightness-100"
+                      className="h-9 md:h-10 w-auto object-contain transition-transform duration-300 hover:scale-105"
                     />
                   </Link>
                 </SidebarMenuButton>

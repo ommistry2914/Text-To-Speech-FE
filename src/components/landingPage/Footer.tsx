@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { FileText, Mic, Bot, Github, Twitter, Linkedin } from "lucide-react";
-import LogoImage from "../../assets/images/janshoai-logo-2-bg-dark-2.png";
+import LogoImage from "../../assets/images/janshoai-logo-2-bg-dark.png";
 
 const Footer = () => {
   const year = new Date().getFullYear();
@@ -12,11 +12,11 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-12 gap-12">
           {/* Brand */}
           <div className="md:col-span-4">
-            <Link to="/" className="inline-block mb-6">
+            <Link to="/" className="inline-block mb-6 group">
               <img
                 src={LogoImage}
                 alt="JanshoAI"
-                className="h-10 w-auto object-contain"
+                className="h-11 md:h-12 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
               />
             </Link>
             <p className="text-sm text-zinc-500 leading-relaxed max-w-xs mb-6">
